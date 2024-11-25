@@ -25,6 +25,20 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
     }
   };
 
+  const setDenseGraph = () => {
+    setVertices(['v0', 'v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9']);
+    setEdges([
+      'v0-v1', 'v0-v2', 'v0-v3', 'v0-v4', 'v0-v5', 'v0-v6', 'v0-v7', 'v0-v8', 'v0-v9',
+      'v1-v2', 'v1-v3', 'v1-v4', 'v1-v5', 'v1-v6', 'v1-v7', 'v1-v8', 'v1-v9',
+      'v2-v3', 'v2-v4', 'v2-v5', 'v2-v6', 'v2-v7', 'v2-v8',
+      'v3-v4', 'v3-v5', 'v3-v6', 'v3-v7',
+      'v4-v5', 'v4-v6',
+      'v5-v6',
+      'v7-v8', 'v7-v9',
+      'v8-v9'
+  ]);
+  }
+
   return (
     <div>
       <h2>Graph Input</h2>
@@ -37,6 +51,7 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
         />
         <button onClick={addVertex}>Add Vertex</button>
       </div>
+      <div style={{ padding: '5px'}}></div>
       <div>
         <input
           type="text"
@@ -56,6 +71,9 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
         <h3>Vertices: {vertices.join(', ')}</h3>
         <h3>Edges: {edges.join(', ')}</h3>
       </div>
+      <div style={{ padding: '10px'}}></div>
+      <h3>Prebuilt Graphs:</h3>
+      <button onClick={() => {setDenseGraph();}}>Dense Graph</button>
     </div>
   );
 };
