@@ -179,7 +179,7 @@ export default function DSaturColoring({ vertices, edges }: GreedyColoringProps)
         <div>
             <h2 style={{ marginBottom: '-15px' }}>DSatur Coloring</h2>
             <p>Colors used: {colorsUsed} </p>
-            <div style={{ border: '1px solid black', borderRadius: '8px', padding: '0px' }}>
+            <div style={{ backgroundColor: 'white', border: '1px solid black', borderRadius: '8px', padding: '0px' }}>
                 <Graph
                     key={key}
                     graph={graph}

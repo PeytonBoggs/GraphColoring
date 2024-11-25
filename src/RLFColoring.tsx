@@ -43,41 +43,61 @@ const getColorForIndex = (index: number): string => {
     return colors[index % colors.length];
   };
 
-const greedyColoringAlgorithm = (vertices: string[], edges: GraphEdge[], setColorsUsed): number[] => {
+  const rlfColoringAlgorithm = (vertices: string[], edges: GraphEdge[], setColorsUsed): number[] => {
     const vertexCount = vertices.length;
     const result = Array(vertexCount).fill(-1);
+    const adjacencyList: Map<string, Set<string>> = new Map();
 
-    for (let u = 0; u < vertexCount; u++) {
-        const available = Array(vertexCount).fill(true);
+    // Initialize adjacency list
+    vertices.forEach(v => adjacencyList.set(v, new Set()));
+    edges.forEach(edge => {
+        adjacencyList.get(edge.from)!.add(edge.to);
+        adjacencyList.get(edge.to)!.add(edge.from);
+    });
 
-        edges.forEach(edge => {
-        if (edge.from === vertices[u] || edge.to === vertices[u]) {
-            const neighborIndex = edge.from === vertices[u] ? vertices.indexOf(edge.to) : vertices.indexOf(edge.from);
-            if (result[neighborIndex] !== -1) {
-            available[result[neighborIndex]] = false;
+    const getUncoloredVertices = () => vertices.filter((_, i) => result[i] === -1);
+    const getDegree = (vertex: string) => adjacencyList.get(vertex)!.size;
+
+    const colorClass = (color: number, uncolored: string[]) => {
+        if (uncolored.length === 0) return;
+
+        // Find vertex with maximum degree
+        let maxDegreeVertex = uncolored[0];
+        uncolored.forEach(v => {
+            if (getDegree(v) > getDegree(maxDegreeVertex)) {
+                maxDegreeVertex = v;
             }
-        }
         });
 
-        for (let cr = 0; cr < vertexCount; cr++) {
-        if (available[cr]) {
-            result[u] = cr;
-            break;
-        }
-        }
+        // Color the max degree vertex
+        result[vertices.indexOf(maxDegreeVertex)] = color;
+
+        // Remove colored vertex and its neighbors from uncolored
+        const newUncolored = uncolored.filter(v => 
+            v !== maxDegreeVertex && !adjacencyList.get(maxDegreeVertex)!.has(v)
+        );
+
+        // Recursively color the remaining vertices
+        colorClass(color, newUncolored);
+    };
+
+    let color = 0;
+    while (getUncoloredVertices().length > 0) {
+        colorClass(color, getUncoloredVertices());
+        color++;
     }
 
-    setColorsUsed(new Set(result).size);
+    setColorsUsed(color);
     return result;
 };
 
-export default function GreedyColoring({ vertices, edges }: GreedyColoringProps) {
+export default function RLFColoring({ vertices, edges }: GreedyColoringProps) {
   const [graph, setGraph] = useState<GraphData>({ nodes: [], edges: [] });
   const [key, setKey] = useState<number>(0);
   const [colorsUsed, setColorsUsed] = useState<number>(0); 
   
   useEffect(() => {
-    const colors = greedyColoringAlgorithm(vertices, edges.map(e => ({ from: e.split('-')[0], to: e.split('-')[1] })), setColorsUsed);
+    const colors = rlfColoringAlgorithm(vertices, edges.map(e => ({ from: e.split('-')[0], to: e.split('-')[1] })), setColorsUsed);
 
     const newNodes = vertices.map((vertex, index) => ({
       id: vertex,
@@ -128,7 +148,7 @@ export default function GreedyColoring({ vertices, edges }: GreedyColoringProps)
 
   return (
     <div>
-        <h2 style={{ marginBottom: '-15px' }}>Greedy Coloring</h2>
+        <h2 style={{ marginBottom: '-15px' }}>Recursive Largest First Coloring</h2>
         <p>Colors used: {colorsUsed} </p>
         <div style={{ backgroundColor: 'white', border: '1px solid black', borderRadius: '8px', padding: '0px' }}>
             <Graph

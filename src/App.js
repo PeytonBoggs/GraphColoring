@@ -2,6 +2,8 @@ import { useState } from 'react';
 import GraphInput from './GraphInput.tsx';
 import GreedyColoring from './GreedyColoring.tsx';
 import DSaturColoring from './DSaturColoring.tsx';
+import RLFColoring from './RLFColoring.tsx';
+import GeneticColoring from './GeneticColoring.tsx';
 
 export default function App() {
   const [vertices, setVertices] = useState([]);
@@ -16,11 +18,11 @@ export default function App() {
       </div>
       <div style={{ flex: 1, padding: '20px' }}>
         <GreedyColoring vertices={vertices} edges={edges} />
-        <DSaturColoring vertices={vertices} edges={edges} />
+        <RLFColoring vertices={vertices} edges={edges} />
       </div>
       <div style={{ flex: 1, padding: '20px' }}>
-        <GreedyColoring vertices={vertices} edges={edges} />
         <DSaturColoring vertices={vertices} edges={edges} />
+        <GeneticColoring vertices={vertices} edges={edges} />
       </div>
     </div>
   );
