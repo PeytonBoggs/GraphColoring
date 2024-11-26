@@ -19,7 +19,7 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
   };
 
   const addEdge = () => {
-    if (edgeInput.from && edgeInput.to) {
+    if (vertices.includes(edgeInput.from) && vertices.includes(edgeInput.to)) {
       setEdges([...edges, `${edgeInput.from}-${edgeInput.to}`]);
       setEdgeInput({ from: '', to: '' });
     }
@@ -160,6 +160,41 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
     ]);
   }
 
+  const setCrownGraph = () => {
+    setVertices([
+      'u0', 'u1', 'u2', 'u3', 'u4',
+      'v0', 'v1', 'v2', 'v3', 'v4'
+    ]);
+  
+    setEdges([
+      'u0-v1', 'u0-v2', 'u0-v3', 'u0-v4',
+      'u1-v0', 'u1-v2', 'u1-v3', 'u1-v4',
+      'u2-v0', 'u2-v1', 'u2-v3', 'u2-v4',
+      'u3-v0', 'u3-v1', 'u3-v2', 'u3-v4',
+      'u4-v0', 'u4-v1', 'u4-v2', 'u4-v3'
+    ]);
+  };
+
+  const setCrownGraph2 = () => {
+    setVertices([
+        'u0', 'v0', 'u1', 'v1', 'u2', 'v2', 'u3', 'v3', 'u4', 'v4',
+        'u5', 'v5', 'u6', 'v6', 'u7', 'v7', 'u8', 'v8', 'u9', 'v9'
+    ]);
+
+    setEdges([
+        'u0-v1', 'u0-v2', 'u0-v3', 'u0-v4', 'u0-v5', 'u0-v6', 'u0-v7', 'u0-v8', 'u0-v9',
+        'u1-v0', 'u1-v2', 'u1-v3', 'u1-v4', 'u1-v5', 'u1-v6', 'u1-v7', 'u1-v8', 'u1-v9',
+        'u2-v0', 'u2-v1', 'u2-v3', 'u2-v4', 'u2-v5', 'u2-v6', 'u2-v7', 'u2-v8', 'u2-v9',
+        'u3-v0', 'u3-v1', 'u3-v2', 'u3-v4', 'u3-v5', 'u3-v6', 'u3-v7', 'u3-v8', 'u3-v9',
+        'u4-v0', 'u4-v1', 'u4-v2', 'u4-v3', 'u4-v5', 'u4-v6', 'u4-v7', 'u4-v8', 'u4-v9',
+        'u5-v0', 'u5-v1', 'u5-v2', 'u5-v3', 'u5-v4', 'u5-v6', 'u5-v7', 'u5-v8', 'u5-v9',
+        'u6-v0', 'u6-v1', 'u6-v2', 'u6-v3', 'u6-v4', 'u6-v5', 'u6-v7', 'u6-v8', 'u6-v9',
+        'u7-v0', 'u7-v1', 'u7-v2', 'u7-v3', 'u7-v4', 'u7-v5', 'u7-v6', 'u7-v8', 'u7-v9',
+        'u8-v0', 'u8-v1', 'u8-v2', 'u8-v3', 'u8-v4', 'u8-v5', 'u8-v6', 'u8-v7', 'u8-v9',
+        'u9-v0', 'u9-v1', 'u9-v2', 'u9-v3', 'u9-v4', 'u9-v5', 'u9-v6', 'u9-v7', 'u9-v8'
+    ]);
+  }
+
   const setIrregularDenseGraph1 = () => {
     setVertices(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']);
     setEdges([
@@ -205,6 +240,40 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
     ]);
   }
 
+  const setIrregularDenseGraph3 = () => {
+    setVertices([
+      '49', '37', '1', '6', '40', '5', '14', '19', '10', '30',
+      '32', '25', '29', '20', '9', '12', '4', '48', '3', '36',
+      '11', '46', '28', '23', '34', '2', '35', '44', '26', '42',
+      '15', '13', '0', '39', '31', '22', '16', '8', '21', '27',
+      '24', '18', '47', '33', '41', '38', '17', '7', '43', '45'
+    ]);
+  
+    setEdges([
+      '0-20', '35-45', '27-47', '23-26', '6-26', '31-41', '33-34',
+      '1-21', '3-4', '8-9', '20-30', '33-43', '30-40', '20-40',
+      '28-48', '12-22', '27-29', '16-36', '38-48', '19-29', '42-44',
+      '28-33', '15-16', '20-23', '15-25', '0-10', '13-19', '12-32',
+      '16-26', '42-43', '12-13', '30-45', '7-8', '36-37', '22-24',
+      '28-29', '20-35', '25-45', '24-25', '13-23', '21-41', '21-22',
+      '11-31', '30-31', '14-15', '7-17', '2-22', '46-47', '37-39',
+      '32-33', '32-34', '17-19', '21-31', '23-33', '11-12', '27-37',
+      '34-35', '1-2', '36-46', '22-23', '47-48', '17-18', '4-14',
+      '12-14', '14-24', '9-10', '40-49', '19-39', '39-49', '5-25',
+      '14-34', '48-49', '5-15', '25-26', '34-44', '39-40', '7-27',
+      '3-13', '22-32', '18-38', '18-19', '3-23', '26-27', '43-44',
+      '9-19', '31-32', '33-36', '16-17', '17-37', '37-47', '24-34',
+      '26-36', '38-39', '35-36', '5-6', '37-38', '24-44', '41-42',
+      '8-18', '29-49', '10-20', '7-9', '15-35', '0-1', '4-5',
+      '25-35', '48-1', '20-21', '13-14', '17-27', '29-39', '38-43',
+      '44-45', '2-12', '1-11', '32-42', '27-28', '22-42', '8-11',
+      '43-46', '19-22', '23-24', '10-11', '47-49', '9-29', '0-2',
+      '45-46', '40-41', '15-16', '11-21', '10-25', '6-7', '26-46',
+      '4-24', '6-16', '28-38', '18-28', '29-30', '8-28', '5-15',
+      '13-33', '23-43', '10-30', '2-3', '19-20', '3-5'
+    ]);
+  };
+
   return (
     <div>
       <h2>Graph Input</h2>
@@ -233,11 +302,6 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
         />
         <button onClick={addEdge}>Add Edge</button>
       </div>
-      <div>
-        <h3>Vertices: {vertices.join(', ')}</h3>
-        <h3>Edges: {edges.join(', ')}</h3>
-      </div>
-      <div style={{ padding: '10px'}}></div>
       <h3>Prebuilt Graphs:</h3>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setK5Graph();}}>K5 Graph</button>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setK33Graph();}}>K33 Graph</button>
@@ -250,8 +314,15 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setTutteGraph();}}>Tutte Graph</button>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setModifiedWheelGraph();}}>Modified Wheel Graph</button>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setClusteredGraph();}}>Clustered Graph</button>
+      <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setCrownGraph();}}>Crown Graph</button>
+      <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setCrownGraph2();}}>Crown Graph 2</button>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setIrregularDenseGraph1();}}>Irregular Dense Graph 1</button>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setIrregularDenseGraph2();}}>Irregular Dense Graph 2</button>
+      <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setIrregularDenseGraph3();}}>Irregular Dense Graph 3</button>
+      <div>
+        <h3>Vertices: {vertices.join(', ')}</h3>
+        <h3>Edges: {edges.join(', ')}</h3>
+      </div>
     </div>
   );
 };
