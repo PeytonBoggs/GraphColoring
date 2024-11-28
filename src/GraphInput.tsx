@@ -25,6 +25,11 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
     }
   };
 
+  const setClearGraph = () => {
+    setVertices([]);
+    setEdges([]);
+  }
+
   const setK5Graph = () => {
     setVertices(['a', 'b', 'c', 'd', 'e']);
     setEdges([
@@ -302,9 +307,10 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
         />
         <button onClick={addEdge}>Add Edge</button>
       </div>
+      <button style={ { marginTop: "10px" }} onClick={() => {setClearGraph();}}>Clear Graph</button>
       <h3>Prebuilt Graphs:</h3>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setK5Graph();}}>K5 Graph</button>
-      <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setK33Graph();}}>K33 Graph</button>
+      <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setK33Graph();}}>K3,3 Graph</button>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setK15Graph();}}>K15 Graph</button>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setC10Graph();}}>C10 Graph</button>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setP10Graph();}}>P10 Graph</button>
@@ -320,8 +326,10 @@ export default function GraphInput({ vertices, setVertices, edges, setEdges } : 
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setIrregularDenseGraph2();}}>Irregular Dense Graph 2</button>
       <button style={ {padding: "5px", margin: "5px" }} onClick={() => {setIrregularDenseGraph3();}}>Irregular Dense Graph 3</button>
       <div>
-        <h3>Vertices: {vertices.join(', ')}</h3>
-        <h3>Edges: {edges.join(', ')}</h3>
+        <div style={{ maxHeight: '175px', overflowY: 'auto', overflowX: 'hidden' }}>
+          <h3>Vertices: {vertices.join(', ')}</h3>
+          <h3>Edges: {edges.join(', ')}</h3>
+        </div>
       </div>
     </div>
   );

@@ -10,12 +10,14 @@ export default function App() {
   const [edges, setEdges] = useState([]);
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', overflowX: 'hidden' }}>
       <div style={{ padding: '20px', paddingTop: '0px', width: '35vw' }}>
-        <h1 style={{ marginBottom: '-15px' }}>MATH 332 Course Project</h1>
+        <h2 style={{ marginBottom: '-15px' }}>Interactive Graph Coloring Visualizer:</h2>
+        <h2 style={{ marginBottom: '-10px' }}>A Comparative Study of Coloring Algorithms</h2>
         <p>Peyton Boggs</p>
         <GraphInput vertices={vertices} setVertices={setVertices} edges={edges} setEdges={setEdges} />
       </div>
+      <div style={{ borderLeft: '1px solid black', height: '97vh' }} />
       <div style={{ flex: 1, padding: '20px' }}>
         <GreedyColoring vertices={vertices} edges={edges} />
         <RLFColoring vertices={vertices} edges={edges} />

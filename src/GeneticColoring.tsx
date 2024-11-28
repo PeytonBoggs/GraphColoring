@@ -48,93 +48,112 @@ const getColorForIndex = (index: number): string => {
     return colors[index % colors.length];
   };
 
-  const geneticColoringAlgorithm = (vertices: string[], edges: GraphEdge[], setColorsUsed, populationSize = 50, generations = 100): number[] => {
-    const vertexCount = vertices.length;
-    const adjacencyList: Map<string, Set<string>> = new Map();
+const geneticColoringAlgorithm = (vertices: string[], edges: GraphEdge[], setColorsUsed): number[] => {
+  const vertexCount = vertices.length;
+  const adjacencyList: Map<string, Set<string>> = new Map();
+  let bestFitness = Infinity;
+  let stagnationCount = 0;
+  const maxStagnationGenerations = 10000;
+  const populationSize = 1000;
 
-    // Initialize adjacency list
-    vertices.forEach(v => adjacencyList.set(v, new Set()));
+  // Initialize adjacency list
+  vertices.forEach(v => adjacencyList.set(v, new Set()));
+  edges.forEach(edge => {
+      adjacencyList.get(edge.from)!.add(edge.to);
+      adjacencyList.get(edge.to)!.add(edge.from);
+  });
+
+  // Generate a random individual
+  const generateIndividual = (): Individual => {
+      const coloring = Array(vertexCount).fill(0).map(() => Math.floor(Math.random() * vertexCount));
+      return { coloring, fitness: calculateFitness(coloring) };
+  };
+
+  // Calculate fitness (lower is better)
+  const calculateFitness = (coloring: number[]): number => {
+    let conflicts = 0;
     edges.forEach(edge => {
-        adjacencyList.get(edge.from)!.add(edge.to);
-        adjacencyList.get(edge.to)!.add(edge.from);
+        const fromIndex = vertices.indexOf(edge.from);
+        const toIndex = vertices.indexOf(edge.to);
+        if (coloring[fromIndex] === coloring[toIndex]) {
+            conflicts++;
+        }
     });
+    const numColors = new Set(coloring).size;
+    const maxColors = vertices.length;
+    
+    return conflicts * 1000 + (numColors / maxColors);
+  };
+  
+  // Crossover two parents to produce a child
+  const crossover = (parent1: Individual, parent2: Individual): Individual => {
+      const crossoverPoint = Math.floor(Math.random() * vertexCount);
+      const childColoring = [...parent1.coloring.slice(0, crossoverPoint), ...parent2.coloring.slice(crossoverPoint)];
+      return { coloring: childColoring, fitness: calculateFitness(childColoring) };
+  };
 
-    // Generate a random individual
-    const generateIndividual = (): Individual => {
-        const coloring = Array(vertexCount).fill(0).map(() => Math.floor(Math.random() * vertexCount));
-        return { coloring, fitness: calculateFitness(coloring) };
-    };
+  // Mutate an individual
+  const mutate = (individual: Individual): Individual => {
+      const mutatedColoring = [...individual.coloring];
+      const mutationPoint = Math.floor(Math.random() * vertexCount);
+      mutatedColoring[mutationPoint] = Math.floor(Math.random() * vertexCount);
+      return { coloring: mutatedColoring, fitness: calculateFitness(mutatedColoring) };
+  };
 
-    // Calculate fitness (lower is better)
-    const calculateFitness = (coloring: number[]): number => {
-        let conflicts = 0;
-        edges.forEach(edge => {
-            const fromIndex = vertices.indexOf(edge.from);
-            const toIndex = vertices.indexOf(edge.to);
-            if (coloring[fromIndex] === coloring[toIndex]) {
-                conflicts++;
-            }
-        });
-        const numColors = new Set(coloring).size;
-        return conflicts * 1000 + numColors;
-    };
-    // Crossover two parents to produce a child
-    const crossover = (parent1: Individual, parent2: Individual): Individual => {
-        const crossoverPoint = Math.floor(Math.random() * vertexCount);
-        const childColoring = [...parent1.coloring.slice(0, crossoverPoint), ...parent2.coloring.slice(crossoverPoint)];
-        return { coloring: childColoring, fitness: calculateFitness(childColoring) };
-    };
+  // Initialize population
+  let population = Array(populationSize).fill(null).map(generateIndividual);
 
-    // Mutate an individual
-    const mutate = (individual: Individual): Individual => {
-        const mutatedColoring = [...individual.coloring];
-        const mutationPoint = Math.floor(Math.random() * vertexCount);
-        mutatedColoring[mutationPoint] = Math.floor(Math.random() * vertexCount);
-        return { coloring: mutatedColoring, fitness: calculateFitness(mutatedColoring) };
-    };
+  // Main genetic algorithm loop
+  while (stagnationCount < maxStagnationGenerations) {
+    // Sort population by fitness (ascending order)
+    population.sort((a, b) => a.fitness - b.fitness);
 
-    // Initialize population
-    let population = Array(populationSize).fill(null).map(generateIndividual);
-
-    // Main genetic algorithm loop
-    for (let gen = 0; gen < generations; gen++) {
-        // Sort population by fitness (ascending order)
-        population.sort((a, b) => a.fitness - b.fitness);
-
-        // Check if we have a valid solution
-        if (population[0].fitness < 1000) {
-            setColorsUsed(new Set(population[0].coloring).size);
-            return population[0].coloring;
-        }
-
-        // Select top half as parents
-        const parents = population.slice(0, populationSize / 2);
-
-        // Create new population
-        const newPopulation: Individual[] = [...parents];
-
-        while (newPopulation.length < populationSize) {
-            const parent1 = parents[Math.floor(Math.random() * parents.length)];
-            const parent2 = parents[Math.floor(Math.random() * parents.length)];
-            let child = crossover(parent1, parent2);
-
-            // Apply mutation with a small probability
-            if (Math.random() < 0.1) {
-                child = mutate(child);
-            }
-
-            newPopulation.push(child);
-        }
-
-        population = newPopulation;
+    // Check if we have a valid solution
+    if (population[0].fitness < 1000) {
+        setColorsUsed(new Set(population[0].coloring).size);
+        return population[0].coloring;
     }
 
-    // Select the best individual
-    population.sort((a, b) => a.fitness - b.fitness);
-    const bestColoring = population[0].coloring;
+    // Update best fitness and stagnation count
+    const currentBestFitness = population[0].fitness;
+    if (currentBestFitness < bestFitness) {
+        bestFitness = currentBestFitness;
+        stagnationCount = 0;
+    } else {
+        stagnationCount++;
+    }
 
-    setColorsUsed(new Set(bestColoring).size);
-    return bestColoring;
+    // Select top half as parents
+    const parents = population.slice(0, populationSize / 2);
+
+    // Create new population
+    const newPopulation: Individual[] = [...parents];
+
+    while (newPopulation.length < populationSize) {
+        const parent1 = parents[Math.floor(Math.random() * parents.length)];
+        const parent2 = parents[Math.floor(Math.random() * parents.length)];
+        let child = crossover(parent1, parent2);
+
+        const baseMutationRate = 0.1;
+        const mutationRate = baseMutationRate + (stagnationCount / maxStagnationGenerations) * 0.2;
+
+        // Apply mutation
+        if (Math.random() < mutationRate) {
+            child = mutate(child);
+        }
+
+        newPopulation.push(child);
+    }
+
+    population = newPopulation;
+  }
+
+  // Select the best individual
+  population.sort((a, b) => a.fitness - b.fitness);
+  const bestColoring = population[0].coloring;
+
+  setColorsUsed(new Set(bestColoring).size);
+  return bestColoring;
 };
 
 export default function GeneticColoring({ vertices, edges }: GreedyColoringProps) {
@@ -168,7 +187,7 @@ export default function GeneticColoring({ vertices, edges }: GreedyColoringProps
         physics: { enabled: false }
       }
     }));
-  }, 1000); // Adjust this delay as needed
+  }, 1000);
 
   return () => clearTimeout(timer);
     
